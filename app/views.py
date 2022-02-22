@@ -83,7 +83,6 @@ def decodemsg(msg):
     saltitud=binary_string[43:57]
     sbearing=binary_string[57:69]
     sspeed=binary_string[69:76]
-
     longitud=int(slongitud,2)
     longitud=longitud*0.0001
     if(signolongitud=="1"):
@@ -101,7 +100,7 @@ def decodemsg(msg):
     #print("hola")
     return [longitud,latitud,altitud,bearing,speed]
 
-def decript(idUsuario,MensajeUsuario,nMensaje):
+def decript(objectId,idUsuario,MensajeUsuario,nMensaje):
     try:
         connection = http.client.HTTPSConnection(parse_server_url, 443)
         params = urllib.parse.urlencode({"where":json.dumps({
@@ -128,14 +127,16 @@ def decript(idUsuario,MensajeUsuario,nMensaje):
         #fun_libreria_c.freeme(descifrado)
         data = decodemsg(smdescif)
         print("longitud = " + str(data[0]) + " latitud = " + str(data[1]) + " altitud = " + str(data[2]) + " bearing = " + str(data[3]) + " speed = " + str(data[4]))
-        return data
+        updatedata(objectId,data)
+        print("actualizado")
+        return 0
     except Exception as e : 
         print('EXCEPTION decript:' + str(e))
         return  ('Erro proccessing')
 
 
 def process(objectId,idUsuario,MensajeUsuario,nMensaje):
-    updatedata(objectId, decript(idUsuario,MensajeUsuario,nMensaje))
+    decript(objectId,idUsuario,MensajeUsuario,nMensaje)
     return 0
 
 @app.route('/')
